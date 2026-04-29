@@ -27,6 +27,14 @@ jobs:
           channel: 'stable'
           cache: true
 
+      # AGGIUNGI QUESTE DUE RIGHE QUI SOTTO:
+      - name: Generate missing platform folders
+        run: flutter create .
+
+      - name: Install dependencies
+        run: flutter pub get
+
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -38,3 +46,4 @@ jobs:
         with:
           name: volleygrade-pro-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+          
