@@ -1,10 +1,8 @@
-name: Build Flutter APK
+name: Build Volleygrade APK
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -12,34 +10,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: 1. Checkout del codice
         uses: actions/checkout@v4
 
-      - name: Set up Java
-        uses: actions/setup-java@v3
+      - name: 2. Configura Java (Ultima versione stabile)
+        uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Flutter
+      - name: 3. Configura Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           cache: true
 
-      - name: Re-initialize project
-        # Usiamo --force per assicurarci che crei tutto il necessario
-        run: flutter create --platforms=android --force .
+      - name: 4. Genera le cartelle di sistema mancanti
+        # Questo comando crea android/ e ios/ in modo pulito
+        run: flutter create --org com.app.volleygrade .
 
-      - name: Install dependencies
+      - name: 5. Scarica le librerie
         run: flutter pub get
 
-      - name: Build APK
-        # Usiamo --debug invece di --release perché non abbiamo ancora configurato le chiavi di firma
+      - name: 6. Compila l'App
         run: flutter build apk --debug
 
-      - name: Upload APK Artifact
+      - name: 7. Salva l'APK per il download
         uses: actions/upload-artifact@v4
         with:
-          name: volleygrade-pro-apk
+          name: Volleygrade-App-Pronta
           path: build/app/outputs/flutter-apk/app-debug.apk
