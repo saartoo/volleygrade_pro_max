@@ -1,4 +1,4 @@
-name: Build Volleygrade APK
+name: Build Flutter APK
 
 on:
   push:
@@ -8,35 +8,36 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: 1. Checkout del codice
+      - name: 1. Checkout
         uses: actions/checkout@v4
 
-      - name: 2. Configura Java (Ultima versione stabile)
+      - name: 2. Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: 3. Configura Flutter
+      - name: 3. Setup Flutter (Versione Garantita)
         uses: subosito/flutter-action@v2
         with:
+          # Usiamo la 3.19.0, che è stabilissima per il codice di Antigravity
+          flutter-version: '3.19.0'
           channel: 'stable'
           cache: true
 
-      - name: 4. Genera le cartelle di sistema mancanti
-        # Questo comando crea android/ e ios/ in modo pulito
-        run: flutter create --org com.app.volleygrade .
+      - name: 4. Genera cartelle mancanti
+        run: flutter create --platforms=android --force .
 
-      - name: 5. Scarica le librerie
+      - name: 5. Installazione
         run: flutter pub get
 
-      - name: 6. Compila l'App
+      - name: 6. Compilazione
+        # Usiamo --debug per evitare problemi di firme digitali
         run: flutter build apk --debug
 
-      - name: 7. Salva l'APK per il download
+      - name: 7. Scarica l'App
         uses: actions/upload-artifact@v4
         with:
-          name: Volleygrade-App-Pronta
+          name: Volleygrade-App
           path: build/app/outputs/flutter-apk/app-debug.apk
