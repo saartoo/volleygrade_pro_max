@@ -18,22 +18,21 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: 3. Setup Flutter (Versione Garantita)
+      - name: 3. Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          # Usiamo la 3.19.0, che è stabilissima per il codice di Antigravity
           flutter-version: '3.19.0'
           channel: 'stable'
           cache: true
 
       - name: 4. Genera cartelle mancanti
-        run: flutter create --platforms=android --force .
+        # Ho rimosso --force che causava l'errore 64
+        run: flutter create --platforms=android .
 
       - name: 5. Installazione
         run: flutter pub get
 
       - name: 6. Compilazione
-        # Usiamo --debug per evitare problemi di firme digitali
         run: flutter build apk --debug
 
       - name: 7. Scarica l'App
